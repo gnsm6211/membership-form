@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>가족 연간회원 신청 | 국립광주과학관</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f3ef;
+    --surface: #ffffff;
+    --border: #e0ddd6;
+    --border-strong: #c8c4bc;
+    --text-primary: #1a1916;
+    --text-secondary: #6b6860;
+    --text-hint: #a8a49e;
+    --accent: #2d5a3d;
+    --accent-light: #e8f0ea;
+    --accent-mid: #4a7c5f;
+    --danger: #c0392b;
+    --danger-light: #fdf0ee;
+    --info: #1a4a7a;
+    --info-light: #eaf0f8;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; padding: 2rem 1rem 5rem; }
+  .page-wrap { max-width: 680px; margin: 0 auto; }
+
+  .page-header { text-align: center; margin-bottom: 2rem; padding-top: 1rem; }
+  .museum-name { font-size: 12px; letter-spacing: 0.12em; color: var(--accent); font-weight: 700; text-transform: uppercase; margin-bottom: 0.75rem; }
+  .page-header h1 { font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: 400; color: var(--text-primary); letter-spacing: -0.01em; margin-bottom: 0.4rem; }
+  .page-header .subtitle { font-size: 14px; color: var(--text-secondary); }
+
+  .progress-wrap { margin-bottom: 2rem; }
+  .progress-track { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.4s ease; width: 0%; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; }
+  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+  .card-title { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+  .badge { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; padding: 3px 10px; border-radius: 20px; }
+  .badge-req { background: var(--danger-light); color: var(--danger); border: 1px solid #f0c4be; }
+
+  .terms-box { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem 1.125rem; font-size: 12.5px; color: var(--text-secondary); line-height: 1.8; max-height: 220px; overflow-y: auto; margin-bottom: 1rem; white-space: pre-wrap; }
+  .terms-box strong { color: var(--text-primary); }
+
+  .agree-label { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+  .agree-label input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
+  .agree-label span { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+
+  .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--text-hint); text-transform: uppercase; margin-bottom: 1rem; }
+
+  .count-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .count-btn { aspect-ratio: 1.4; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); font-family: 'Noto Sans KR', sans-serif; font-size: 15px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
+  .count-btn:hover { border-color: var(--accent-mid); color: var(--accent); background: var(--accent-light); }
+  .count-btn.active { border-color: var(--accent); background: var(--accent); color: #fff; font-weight: 700; }
+
+  .info-box { background: var(--info-light); border: 1px solid #c0d4ec; border-radius: var(--radius-sm); padding: 12px 16px; font-size: 13px; color: var(--info); margin-bottom: 1.5rem; line-height: 1.7; }
+
+  /* 오류 박스 */
+  .error-box { background: var(--danger-light); border: 1px solid #f0c4be; border-radius: var(--radius-sm); padding: 12px 16px; font-size: 13px; color: var(--danger); margin-bottom: 1rem; line-height: 1.6; display: none; }
+  .error-box ul { padding-left: 1.2em; margin-top: 4px; }
+  .error-box ul li { margin-bottom: 2px; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid1 { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 14px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field > label { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+  .field > label .req { color: var(--danger); margin-left: 2px; }
+  .field input, .field select { width: 100%; height: 40px; padding: 0 12px; font-family: 'Noto Sans KR', sans-serif; font-size: 14px; color: var(--text-primary); background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); outline: none; transition: border-color 0.15s; appearance: none; -webkit-appearance: none; }
+  .field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a8a49e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+  .field input:focus, .field select:focus { border-color: var(--accent-mid); background: #fff; }
+  .field input::placeholder { color: var(--text-hint); }
+  .field input.err, .field select.err { border-color: var(--danger); }
+
+  /* 체크박스 그룹 — label 태그 전체가 클릭 영역 */
+  /* 가입목적 커스텀 체크박스 */
+  .cb-group { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+  .cb-item { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); transition: all 0.15s; }
+  .cb-item:hover { border-color: var(--accent-mid); background: var(--accent-light); }
+  .cb-item.checked { border-color: var(--accent); background: var(--accent-light); }
+  .cb-item input[type="checkbox"] { display: none; }
+  .cb-box { width: 20px; height: 20px; border: 2px solid var(--border-strong); border-radius: 4px; background: #fff; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .cb-item.checked .cb-box { background: var(--accent); border-color: var(--accent); }
+  .cb-check { display: none; color: #fff; font-size: 13px; font-weight: 700; }
+  .cb-item.checked .cb-check { display: block; }
+  .cb-item span { font-size: 13.5px; color: var(--text-primary); line-height: 1.4; }
+
+  .vehicle-list { display: flex; flex-direction: column; gap: 8px; }
+  .vehicle-row { display: flex; gap: 8px; align-items: center; }
+  .vehicle-row input { flex: 1; height: 40px; padding: 0 12px; font-family: 'Noto Sans KR', sans-serif; font-size: 14px; color: var(--text-primary); background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); outline: none; transition: border-color 0.15s; }
+  .vehicle-row input:focus { border-color: var(--accent-mid); background: #fff; }
+  .vehicle-row input::placeholder { color: var(--text-hint); }
+  .vehicle-del { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--text-hint); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
+  .vehicle-del:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-light); }
+  .vehicle-add-btn { width: 100%; height: 36px; margin-top: 8px; border: 1px dashed var(--border-strong); border-radius: var(--radius-sm); background: transparent; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
+  .vehicle-add-btn:hover:not(:disabled) { border-color: var(--accent-mid); color: var(--accent); background: var(--accent-light); }
+  .vehicle-add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+  .submit-btn { width: 100%; padding: 16px; font-family: 'Noto Sans KR', sans-serif; font-size: 16px; font-weight: 700; color: #fff; background: var(--accent); border: none; border-radius: var(--radius); cursor: pointer; transition: all 0.2s; letter-spacing: 0.02em; box-shadow: 0 4px 16px rgba(45,90,61,0.25); }
+  .submit-btn:hover:not(:disabled) { background: var(--accent-mid); transform: translateY(-1px); }
+  .submit-btn:active:not(:disabled) { transform: translateY(0); }
+  .submit-btn:disabled { background: var(--border-strong); box-shadow: none; cursor: not-allowed; }
+
+  /* 완료 화면 */
+  .success-screen { display: none; text-align: center; padding: 3.5rem 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+  .success-icon { width: 72px; height: 72px; background: var(--accent-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 32px; color: var(--accent); }
+  .success-screen h2 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; margin-bottom: 0.5rem; color: var(--text-primary); }
+  .success-screen .thank-msg { font-size: 18px; font-weight: 700; color: var(--accent); margin-bottom: 1rem; }
+  .success-screen p { font-size: 14px; color: var(--text-secondary); line-height: 1.8; }
+  .success-number { display: inline-block; margin-top: 1.5rem; padding: 10px 28px; background: var(--accent-light); border: 1px solid #b8d4c0; border-radius: 24px; font-size: 18px; font-weight: 700; color: var(--accent); letter-spacing: 0.06em; }
+
+  .hidden { display: none; }
+
+  @media (max-width: 480px) {
+    .grid2 { grid-template-columns: 1fr; }
+    .page-header h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="page-header">
+    <div class="museum-name">국립광주과학관</div>
+    <h1>가족 연간회원 신청</h1>
+    <p class="subtitle">가족과 함께 과학의 즐거움을 누려보세요.</p>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+  </div>
+
+  <!-- STEP 1: 약관 -->
+  <div id="step-terms">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">국립광주과학관 회원제 약관</span>
+        <span class="badge badge-req">필수</span>
+      </div>
+      <div class="terms-box"><strong>(제1조) (회원의 정의)</strong>
+"회원"이란 국립광주과학관(이하 "과학관"이라 한다)이 운영하는 "국립광주과학관 회원제"(이하 "회원제"라 한다)에 가입한 자로서, 가입일로부터 회원 유효기간(이하 "회원기간"이라 한다)동안 무료관람 등 정보 제공 등 과학관이 제공하는 혜택을 이용할 수 있는 회원을 말한다.
+
+<strong>(제2조) (회원의 구분)</strong> 회원은 다음과 같이 구분한다.
+1. 일반회원
+  가. 개인회원 : 개인의 자격으로 가입하여 회비를 납부한 회원
+  나. 가족회원 : 직계가족 3인 이상으로 가입하여 회비를 납부한 회원
+2. 특별회원 : 기관 운영에 대한 기여 또는 필요성이 인정되는 자로서 관장이 정하는 기준에 따라 지정한 회원
+
+<strong>(제3조) (회원의 가입)</strong>
+① 회원은 과학관이 정한 요금정책에 따라 가입하여야 하며, 요금이 변경된 경우에는 변경된 요금을 적용한다.
+② 회비는 현금, 신용카드 또는 계좌이체로 과학관에 납부해야 한다.
+③ 회원기간은 가입일로부터 1년으로 하며, 기간 만료 시 1년 단위로 재가입할 수 있다.
+
+<strong>(제4조) (회원증의 발급)</strong>
+① 과학관은 회비 납부를 확인한 후 회원증을 발급한다.
+② 가족회원의 경우 회원 구성원 각각에게 회원증을 개별 발급한다.
+
+<strong>(제5조) (회원증의 분실)</strong>
+① 회원은 회원증을 분실하거나 훼손된 경우 과학관에 신고하고, 재발급 신청을 하여야 한다.
+② 회원증 재발급에 소요되는 비용은 회원이 부담한다.
+③ 분실신고 이전에 발생한 부정사용에 따른 불이익은 회원이 부담한다.
+
+<strong>(제6조) (회비의 환불)</strong>
+① 환불을 원하는 회원은 환불 신청서를 작성·제출하여야 하며, 과학관은 10일 이내에 환불여부를 결정·통보 한다.
+② 회비의 환불은 불가피한 사유로 인정되는 경우를 제외하고 회원 등록 후 1개월 이내에 가능하다. 다만, 혜택을 제공받은 경우에는 취소할 수 없다.
+
+<strong>(제7조) (회원의 준수사항)</strong>
+① 회원은 과학관 입장 시 회원증을 제시하여야 하며, 미제시 시 혜택 적용이 제한될 수 있다.
+② 회원은 회원증을 타인에게 양도 또는 대여할 수 없으며, 위반 시 혜택 이용 및 재가입이 제한될 수 있다.
+③ 회원 정보 변경 시 과학관에 알려야 하며, 이를 이행하지 않아 발생한 불이익은 회원의 책임으로 한다.
+
+본인은 상기 내용 및 이용약관을 확인하였으며, 이를 충분히 이해하고 동의합니다.
+※ 만 14세 미만 아동인 경우 반드시 법정대리인의 동의가 필요합니다.</div>
+      <label class="agree-label">
+        <input type="checkbox" id="agree1" onchange="updateTermsBtn()">
+        <span>동의합니다.</span>
+      </label>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">개인정보 수집 · 이용 동의서</span>
+        <span class="badge badge-req">필수</span>
+      </div>
+      <div class="terms-box">국립광주과학관 회원제 운영을 위해 다음과 같이 귀하의 개인정보를 수집 및 이용합니다.
+
+<strong>[개인정보를 제공받는 자]</strong>
+연간회원 가입 시 국립광주과학관에서 개인정보 수집 후 서비스 이용 시 개인정보를 제공합니다.
+
+<strong>[개인정보 수집/이용 목적]</strong>
+회원증 발급 및 회원자격 본인확인, 부정 이용 방지 및 고지사항 전달 등의 목적으로 개인정보를 처리합니다.
+
+<strong>[개인정보 수집 필수항목]</strong>
+성명, 성별, 출생년도, 주소, 연간회원용 사진, 연락처
+
+<strong>[개인정보의 보유 및 이용 기간]</strong>
+가. 보존근거 : 정보주체의 동의
+나. 보존기간 : 회원기간 만료 또는 탈퇴 의사 후 즉시
+
+※ 수집된 개인정보는 개인정보보호 관리지침에 따라 안전하게 보호됩니다.</div>
+      <label class="agree-label">
+        <input type="checkbox" id="agree2" onchange="updateTermsBtn()">
+        <span>동의합니다.</span>
+      </label>
+    </div>
+
+    <button class="submit-btn" id="terms-next-btn" onclick="goToForm()" disabled>
+      다음 단계로 →
+    </button>
+  </div>
+
+  <!-- STEP 2: 신청 폼 -->
+  <div id="step-form" class="hidden">
+
+    <div class="card">
+      <div class="section-label">총 가족 인원 선택 <span style="color:var(--danger)">*</span></div>
+      <div class="count-grid">
+        <button class="count-btn" onclick="selectCount(3)">3명</button>
+        <button class="count-btn" onclick="selectCount(4)">4명</button>
+        <button class="count-btn" onclick="selectCount(5)">5명</button>
+        <button class="count-btn" onclick="selectCount(6)">6명+</button>
+      </div>
+    </div>
+
+    <div id="main-form" class="hidden">
+
+      <div class="info-box" id="info-box"></div>
+
+      <!-- 오류 안내 -->
+      <div class="error-box" id="error-box">
+        <strong>아래 항목을 확인해주세요.</strong>
+        <ul id="error-list"></ul>
+      </div>
+
+      <!-- 대표자 -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">대표자 정보</span>
+          <span class="badge badge-req">필수</span>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label>성명 <span class="req">*</span></label>
+            <input type="text" id="rep-name" placeholder="홍길동" oninput="updateProgress()">
+          </div>
+          <div class="field">
+            <label>구분(연령) <span class="req">*</span></label>
+            <select id="rep-type" onchange="updateProgress()">
+              <option value="">선택하세요</option>
+              <option>성인</option>
+              <option>청소년(초·중·고)</option>
+              <option>유아</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>생년월일 (YYYYMMDD) <span class="req">*</span></label>
+            <input type="text" id="rep-birth" placeholder="19900101" maxlength="8"
+              oninput="this.value=this.value.replace(/[^0-9]/g,''); updateProgress()">
+          </div>
+          <div class="field">
+            <label>연락처 <span class="req">*</span> (숫자만)</label>
+            <input type="tel" id="rep-phone" placeholder="01000000000" maxlength="11"
+              oninput="this.value=this.value.replace(/[^0-9]/g,''); updateProgress()">
+          </div>
+        </div>
+        <div class="grid1">
+          <div class="field">
+            <label>이메일</label>
+            <input type="email" id="rep-email" placeholder="example@email.com" oninput="updateProgress()">
+          </div>
+          <div class="field">
+            <label>주소 (상세주소 포함) <span class="req">*</span></label>
+            <input type="text" id="rep-addr" oninput="updateProgress()">
+          </div>
+        </div>
+
+        <div style="margin-top:14px">
+          <div class="field">
+            <label>등록차량 (전체차량번호) <span class="req">*</span>
+              <span id="vehicle-limit-label" style="font-weight:400; color:var(--text-hint); margin-left:4px"></span>
+            </label>
+            <div class="vehicle-list" id="vehicle-list"></div>
+            <button class="vehicle-add-btn" id="vehicle-add-btn" onclick="addVehicle()">+ 차량 추가</button>
+          </div>
+        </div>
+
+        <!-- 가입목적 — label 전체가 클릭 영역 -->
+        <div style="margin-top:14px">
+          <div class="field">
+            <label>가입목적 <span class="req">*</span> (복수 선택 가능)</label>
+            <div class="cb-group">
+              <label class="cb-item" for="p1"><input type="checkbox" id="p1" onchange="syncCheck('p1')"><div class="cb-box"><span class="cb-check">✓</span></div><span>트리플패스 관람권 무료</span></label>
+              <label class="cb-item" for="p2"><input type="checkbox" id="p2" onchange="syncCheck('p2')"><div class="cb-box"><span class="cb-check">✓</span></div><span>특수영상관 관람 무료</span></label>
+              <label class="cb-item" for="p3"><input type="checkbox" id="p3" onchange="syncCheck('p3')"><div class="cb-box"><span class="cb-check">✓</span></div><span>특별전시 30% 할인</span></label>
+              <label class="cb-item" for="p4"><input type="checkbox" id="p4" onchange="syncCheck('p4')"><div class="cb-box"><span class="cb-check">✓</span></div><span>무료주차</span></label>
+              <label class="cb-item" for="p5"><input type="checkbox" id="p5" onchange="syncCheck('p5')"><div class="cb-box"><span class="cb-check">✓</span></div><span>협력기관 할인 혜택</span></label>
+              <label class="cb-item" for="p6"><input type="checkbox" id="p6" onchange="syncCheck('p6')"><div class="cb-box"><span class="cb-check">✓</span></div><span>ASTC가입 해외 전시관 무료입장</span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid2" style="margin-top:14px">
+          <div class="field">
+            <label>가입구분 <span class="req">*</span></label>
+            <select id="rep-join" onchange="updateProgress()">
+              <option value="">선택하세요</option>
+              <option>신규가입자</option>
+              <option>기가입자(연장 또는 재가입)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>가입날짜 <span class="req">*</span></label>
+            <input type="date" id="rep-date" oninput="updateProgress()">
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:space-between; margin: 1.5rem 0 0.75rem;">
+        <div class="section-label" style="margin:0">가족 구성원 정보</div>
+        <span id="member-counter" style="font-size:12px; color:var(--text-secondary);"></span>
+      </div>
+
+      <div id="family-list"></div>
+
+      <hr class="divider">
+
+      <button class="submit-btn" id="submit-btn" onclick="submitForm()">
+        가족 연간회원 신청하기 →
+      </button>
+    </div>
+  </div>
+
+  <!-- 완료 화면 -->
+  <div class="success-screen" id="success-screen">
+    <div class="success-icon">✓</div>
+    <h2>신청이 완료되었습니다<br>감사합니다!</h2>
+  </div>
+
+</div>
+
+<script>
+const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+
+let totalCount = 0;
+let vehicleIds = [];
+let vehicleSeq = 0;
+
+function syncCheck(id) {
+  const cb = document.getElementById(id);
+  const label = cb.closest('.cb-item');
+  label.classList.toggle('checked', cb.checked);
+  updateProgress();
+}
+
+function updateTermsBtn() {
+  const ok = document.getElementById('agree1').checked && document.getElementById('agree2').checked;
+  document.getElementById('terms-next-btn').disabled = !ok;
+}
+
+function goToForm() {
+  document.getElementById('step-terms').classList.add('hidden');
+  document.getElementById('step-form').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function selectCount(n) {
+  totalCount = n;
+  document.querySelectorAll('.count-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', [3,4,5,6][i] === n);
+  });
+  const memberNeeded = totalCount - 1;
+  document.getElementById('info-box').innerHTML =
+    `총 <strong>${totalCount}명</strong> 신청 · 대표자 1명 + 가족 구성원 ${memberNeeded}명 ·
+     차량은 최대 <strong>${totalCount}대</strong>까지 등록 가능합니다.<br>
+     <span style="color:var(--text-hint);font-size:12px">차량이 없는 경우 <strong>"없음"</strong>이라고 입력해주세요.</span>`;
+  document.getElementById('vehicle-limit-label').textContent = `(최대 ${totalCount}대)`;
+  document.getElementById('main-form').classList.remove('hidden');
+  vehicleIds = []; vehicleSeq = 0;
+  document.getElementById('vehicle-list').innerHTML = '';
+  addVehicle();
+  buildFamilyCards(memberNeeded);
+  document.getElementById('member-counter').textContent = `총 ${memberNeeded}명 입력 필요`;
+  updateProgress();
+  setTimeout(() => document.getElementById('main-form').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function buildFamilyCards(n) {
+  const list = document.getElementById('family-list');
+  list.innerHTML = '';
+  for (let i = 1; i <= n; i++) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = 'member-' + i;
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="card-title">가족 구성원 ${i}</span>
+        <span class="badge badge-req">필수</span>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>성명 <span class="req">*</span></label>
+          <input type="text" id="mname-${i}" placeholder="홍아무개" oninput="updateProgress()">
+        </div>
+        <div class="field">
+          <label>생년월일 (YYYYMMDD) <span class="req">*</span></label>
+          <input type="text" id="mbirth-${i}" placeholder="20100101" maxlength="8"
+            oninput="this.value=this.value.replace(/[^0-9]/g,''); updateProgress()">
+        </div>
+        <div class="field">
+          <label>구분(연령) <span class="req">*</span></label>
+          <select id="mtype-${i}" onchange="updateProgress()">
+            <option value="">선택하세요</option>
+            <option>성인</option>
+            <option>청소년(초·중·고)</option>
+            <option>유아</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>가족관계 <span class="req">*</span></label>
+          <select id="mrel-${i}" onchange="updateProgress()">
+            <option value="">선택하세요</option>
+            <option>배우자</option>
+            <option>자녀</option>
+          </select>
+        </div>
+      </div>
+    `;
+    list.appendChild(card);
+  }
+}
+
+function addVehicle() {
+  if (vehicleIds.length >= totalCount) return;
+  vehicleSeq++;
+  const id = vehicleSeq;
+  vehicleIds.push(id);
+  const row = document.createElement('div');
+  row.className = 'vehicle-row';
+  row.id = 'vrow-' + id;
+  row.innerHTML = `
+    <input type="text" id="vehicle-${id}" placeholder="00가0000 · 없으면 없음" oninput="updateProgress()">
+    ${vehicleIds.length > 1 ? `<button class="vehicle-del" onclick="removeVehicle(${id})" title="삭제">×</button>` : ''}
+  `;
+  document.getElementById('vehicle-list').appendChild(row);
+  updateVehicleBtn();
+}
+
+function removeVehicle(id) {
+  document.getElementById('vrow-' + id)?.remove();
+  vehicleIds = vehicleIds.filter(v => v !== id);
+  updateVehicleBtn();
+  updateProgress();
+}
+
+function updateVehicleBtn() {
+  const btn = document.getElementById('vehicle-add-btn');
+  const full = vehicleIds.length >= totalCount;
+  btn.disabled = full;
+  btn.textContent = full ? `최대 ${totalCount}대 등록 완료` : '+ 차량 추가';
+}
+
+function updateProgress() {
+  if (!totalCount) return;
+  const repFields = [
+    document.getElementById('rep-name')?.value.trim(),
+    document.getElementById('rep-type')?.value,
+    document.getElementById('rep-birth')?.value.trim(),
+    document.getElementById('rep-phone')?.value.trim(),
+    document.getElementById('rep-addr')?.value.trim(),
+    document.getElementById('rep-join')?.value,
+    document.getElementById('rep-date')?.value,
+  ];
+  const purposeOk = ['p1','p2','p3','p4','p5','p6'].some(id => document.getElementById(id)?.checked) ? 1 : 0;
+  const repFilled = repFields.filter(Boolean).length + purposeOk;
+  const vFilled = vehicleIds.some(id => document.getElementById('vehicle-' + id)?.value.trim()) ? 1 : 0;
+  const needed = totalCount - 1;
+  let mFilled = 0;
+  for (let i = 1; i <= needed; i++) {
+    if (document.getElementById('mname-'+i)?.value.trim() &&
+        document.getElementById('mbirth-'+i)?.value.trim() &&
+        document.getElementById('mtype-'+i)?.value &&
+        document.getElementById('mrel-'+i)?.value) mFilled++;
+  }
+  const total = 8 + needed;
+  const filled = repFilled + vFilled + mFilled;
+  document.getElementById('progress').style.width = Math.min(100, Math.round((filled / total) * 100)) + '%';
+}
+
+function showError(msgs) {
+  const box = document.getElementById('error-box');
+  const list = document.getElementById('error-list');
+  list.innerHTML = msgs.map(m => `<li>${m}</li>`).join('');
+  box.style.display = 'block';
+  box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function hideError() {
+  document.getElementById('error-box').style.display = 'none';
+}
+
+function submitForm() {
+  hideError();
+  const errors = [];
+
+  if (!totalCount) { errors.push('가족 인원 수를 선택해주세요.'); showError(errors); return; }
+
+  const repName  = document.getElementById('rep-name').value.trim();
+  const repType  = document.getElementById('rep-type').value;
+  const repBirth = document.getElementById('rep-birth').value.trim();
+  const repPhone = document.getElementById('rep-phone').value.trim();
+  const repAddr  = document.getElementById('rep-addr').value.trim();
+  const repJoin  = document.getElementById('rep-join').value;
+  const repDate  = document.getElementById('rep-date').value;
+  const repEmail = document.getElementById('rep-email').value.trim();
+
+  if (!repName)  errors.push('대표자 성명을 입력해주세요.');
+  if (!repType)  errors.push('대표자 구분(연령)을 선택해주세요.');
+  if (!repBirth || repBirth.length !== 8) errors.push('대표자 생년월일을 YYYYMMDD 형식으로 입력해주세요.');
+  if (!repPhone || repPhone.length < 10)  errors.push('대표자 연락처를 정확히 입력해주세요.');
+  if (!repAddr)  errors.push('대표자 주소를 입력해주세요.');
+
+  const purposes = ['p1','p2','p3','p4','p5','p6']
+    .filter(id => document.getElementById(id)?.checked)
+    .map(id => document.getElementById(id).nextElementSibling.textContent.trim());
+  if (!purposes.length) errors.push('가입목적을 하나 이상 선택해주세요.');
+
+  const vehicles = vehicleIds.map(id => document.getElementById('vehicle-'+id)?.value.trim()).filter(Boolean);
+  if (!vehicles.length) errors.push('등록차량을 입력해주세요. (없으면 "없음")');
+
+  if (!repJoin) errors.push('가입구분을 선택해주세요.');
+  if (!repDate) errors.push('가입날짜를 입력해주세요.');
+
+  const needed = totalCount - 1;
+  const members = [];
+  for (let i = 1; i <= needed; i++) {
+    const mName  = document.getElementById('mname-'+i)?.value.trim();
+    const mBirth = document.getElementById('mbirth-'+i)?.value.trim();
+    const mType  = document.getElementById('mtype-'+i)?.value;
+    const mRel   = document.getElementById('mrel-'+i)?.value;
+    if (!mName)  errors.push(`가족 구성원 ${i}번 성명을 입력해주세요.`);
+    else if (!mBirth || mBirth.length !== 8) errors.push(`가족 구성원 ${i}번 생년월일을 YYYYMMDD 형식으로 입력해주세요.`);
+    else if (!mType) errors.push(`가족 구성원 ${i}번 구분(연령)을 선택해주세요.`);
+    else if (!mRel)  errors.push(`가족 구성원 ${i}번 가족관계를 선택해주세요.`);
+    else members.push({ name: mName, birth: mBirth, type: mType, rel: mRel });
+  }
+
+  if (errors.length) { showError(errors); return; }
+
+  const suffix = repJoin.includes('기가입') ? '-2' : '-1';
+  const mockSeq = String(Math.floor(Math.random() * 900) + 100).padStart(3, '0');
+  const memberNum = 'GM' + mockSeq + suffix;
+
+  const rows = [];
+  rows.push({ memberNum, date: repDate, role: '대표', memberType: '가족회원', name: repName, type: repType, birth: repBirth, phone: repPhone, email: repEmail, addr: repAddr, vehicles: vehicles.join(', '), purpose: purposes.join(', '), joinType: repJoin, rel: '-', totalCount });
+  members.forEach((m, i) => {
+    rows.push({ memberNum, date: repDate, role: `구성원${i+1}`, memberType: '가족회원', name: m.name, type: m.type, birth: m.birth, phone: '', email: '', addr: '', vehicles: '', purpose: '', joinType: '', rel: m.rel, totalCount });
+  });
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = '제출 중...';
+
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    setTimeout(() => showSuccess(memberNum), 600);
+    return;
+  }
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST', mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ rows })
+  })
+  .then(() => showSuccess(memberNum))
+  .catch(() => showSuccess(memberNum));
+}
+
+function showSuccess(memberNum) {
+  document.getElementById('step-form').classList.add('hidden');
+  const s = document.getElementById('success-screen');
+  s.style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
