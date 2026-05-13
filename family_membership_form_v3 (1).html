@@ -344,7 +344,7 @@
 </div>
 
 <script>
-const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyVh02c3TLiJmM0gjbCL95n6AumiBugs__8C0P6ynvYvkQOJuhGtV82HnfmRhftzWO7/exec';
 
 let totalCount = 0;
 let vehicleIds = [];
@@ -565,7 +565,7 @@ function submitForm() {
   btn.disabled = true;
   btn.textContent = '제출 중...';
 
-  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbyVh02c3TLiJmM0gjbCL95n6AumiBugs__8C0P6ynvYvkQOJuhGtV82HnfmRhftzWO7/exec') {
     setTimeout(() => showSuccess(memberNum), 600);
     return;
   }
